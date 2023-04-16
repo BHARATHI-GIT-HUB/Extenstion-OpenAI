@@ -1,16 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Configuration, OpenAIApi } from "openai";
 import "./App.css";
 import { Box, Button, Container, Grid, TextField, Paper } from "@mui/material";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
+
+import { useSpeechSynthesis } from "react-speech-kit";
 
 function App() {
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState("");
 
+  const { speak } = useSpeechSynthesis();
+
   const configuration = new Configuration({
-    apiKey: "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",
+    apiKey: "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",
   });
 
   const openai = new OpenAIApi(configuration);
@@ -21,7 +25,6 @@ function App() {
     try {
       const completion = await openai.createCompletion({
         model: "text-davinci-002",
-        // prompt: `${prompt} is a budget-friendly option for basic computer usage,making it a good value for money purchase.Review:`,
         prompt: prompt,
         max_tokens: 100,
       });
@@ -30,6 +33,12 @@ function App() {
     } catch (e) {
       alert("Error: ", e);
       setIsLoading(false);
+    }
+  }
+
+  function handleSpeech() {
+    if (isLoading == false) {
+      speak({ text: response });
     }
   }
 
